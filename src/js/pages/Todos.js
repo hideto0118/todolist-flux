@@ -1,24 +1,39 @@
 import React from "react";
 
 import Todo from "../components/Todo";
+import * as TodoActions from "../actions/TodoActions";
+import TodoStore from "../stores/TodoStore";
 
 export default class Todos extends React.Component {
   constructor() {
     super();
     this.state = {
-      todos: [
-        {
-          id: 113464613,
-          text: "Go Shopping",
-          complete: false
-        },
-        {
-          id: 235684679,
-          text: "Pay Bills",
-          complete: false
-        }
-      ]
+      // todos: [
+      //   {
+      //     id: 113464613,
+      //     text: "Go Shopping",
+      //     complete: false
+      //   },
+      //   {
+      //     id: 235684679,
+      //     text: "Pay Bills",
+      //     complete: false
+      //   }
+      // ]
+      todos: TodoStore.getAll()
     };
+  }
+
+  componentDidMount() {
+    TodoStore.on("change", () => {
+      this.setState({
+        todos: TodoStore.getAll()
+      });
+    });
+  }
+
+  createTodo() {
+    TodoActions.createTodo("New Todo");
   }
 
   render() {
@@ -30,6 +45,7 @@ export default class Todos extends React.Component {
 
     return (
       <div>
+        <button onClick={this.createTodo.bind(this)}>Create</button>
         <h1>Todos</h1>
         <ul>{TodoComponents}</ul>
       </div>
